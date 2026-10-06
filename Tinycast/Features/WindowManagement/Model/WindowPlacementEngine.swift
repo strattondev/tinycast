@@ -413,6 +413,30 @@ enum WindowPlacementEngine {
                 x0: oneThird, x1: 1, y0: 0, y1: 1,
                 anchor: Anchor(horizontal: .max, vertical: .min))
 
+        // Sixths: the Thirds columns crossed with the Halves rows.
+        case .topLeftSixth:
+            return Fractions(x0: 0, x1: oneThird, y0: 0, y1: 0.5, anchor: .topLeading)
+        case .topCenterSixth:
+            return Fractions(
+                x0: oneThird, x1: twoThirds, y0: 0, y1: 0.5,
+                anchor: Anchor(horizontal: .center, vertical: .min))
+        case .topRightSixth:
+            return Fractions(
+                x0: twoThirds, x1: 1, y0: 0, y1: 0.5,
+                anchor: Anchor(horizontal: .max, vertical: .min))
+        case .bottomLeftSixth:
+            return Fractions(
+                x0: 0, x1: oneThird, y0: 0.5, y1: 1,
+                anchor: Anchor(horizontal: .min, vertical: .max))
+        case .bottomCenterSixth:
+            return Fractions(
+                x0: oneThird, x1: twoThirds, y0: 0.5, y1: 1,
+                anchor: Anchor(horizontal: .center, vertical: .max))
+        case .bottomRightSixth:
+            return Fractions(
+                x0: twoThirds, x1: 1, y0: 0.5, y1: 1,
+                anchor: Anchor(horizontal: .max, vertical: .max))
+
         // Half the screen's area, so it reads as the family sibling of Center Third.
         case .centerHalf:
             return Fractions(

@@ -118,7 +118,7 @@ struct WindowCommandTests {
 
     static func testCatalog() {
         let commands = WindowCommandCatalog.all
-        expect(commands.count == 35, "catalog contains all 35 agreed commands")
+        expect(commands.count == 41, "catalog contains all 41 agreed commands")
         expect(commands.map(\.id) == WindowCommand.ID.allCases, "catalog covers every ID once")
         expect(
             Set(commands.map { $0.name.lowercased() }).count == commands.count, "names are unique")
@@ -180,6 +180,7 @@ struct WindowCommandTests {
         expect(grouped.first { $0.group == .quarters }?.commands.count == 4, "four quarters")
         expect(grouped.first { $0.group == .fourths }?.commands.count == 2, "two fourths")
         expect(grouped.first { $0.group == .thirds }?.commands.count == 5, "five thirds")
+        expect(grouped.first { $0.group == .sixths }?.commands.count == 6, "six sixths")
         expect(grouped.first { $0.group == .sizing }?.commands.count == 11, "eleven sizing commands")
         expect(grouped.first { $0.group == .moving }?.commands.count == 6, "six moving commands")
         expect(grouped.first { $0.group == .spaces }?.commands.count == 2, "two space commands")
@@ -277,6 +278,39 @@ struct WindowCommandTests {
             frame(.firstTwoThirds)!.union(frame(.lastThird)!) == mainScreen.visibleFrame,
             "first two thirds and last third partition the screen")
 
+        expectRect(
+            frame(.topLeftSixth)!, CGRect(x: 0, y: 0, width: 480, height: 450), "top left sixth")
+        expectRect(
+            frame(.topCenterSixth)!, CGRect(x: 480, y: 0, width: 480, height: 450),
+            "top center sixth")
+        expectRect(
+            frame(.topRightSixth)!, CGRect(x: 960, y: 0, width: 480, height: 450),
+            "top right sixth")
+        expectRect(
+            frame(.bottomLeftSixth)!, CGRect(x: 0, y: 450, width: 480, height: 450),
+            "bottom left sixth")
+        expectRect(
+            frame(.bottomCenterSixth)!, CGRect(x: 480, y: 450, width: 480, height: 450),
+            "bottom center sixth")
+        expectRect(
+            frame(.bottomRightSixth)!, CGRect(x: 960, y: 450, width: 480, height: 450),
+            "bottom right sixth")
+
+        let sixths = [
+            frame(.topLeftSixth)!, frame(.topCenterSixth)!, frame(.topRightSixth)!,
+            frame(.bottomLeftSixth)!, frame(.bottomCenterSixth)!, frame(.bottomRightSixth)!
+        ]
+        expect(
+            sixths.reduce(CGRect.null) { $0.union($1) } == mainScreen.visibleFrame,
+            "the six sixths union to the visible frame")
+        var sixthsOverlap = false
+        for i in sixths.indices {
+            for j in sixths.indices where j > i {
+                if !sixths[i].intersection(sixths[j]).isEmpty { sixthsOverlap = true }
+            }
+        }
+        expect(!sixthsOverlap, "sixths never overlap")
+
         // Size cycling: halves only, ½ → ⅓ → ⅔, wrapping.
         expectRect(
             frame(.leftHalf, step: 1, cycle: .sizes)!, frame(.firstThird)!,
@@ -352,6 +386,26 @@ struct WindowCommandTests {
             let top = frame(.topHalf, on: screen)!
             let bottom = frame(.bottomHalf, on: screen)!
             expect(top.maxY == bottom.minY, "\(width): vertical halves share an edge exactly")
+
+            let topLeftSixth = frame(.topLeftSixth, on: screen)!
+            let topCenterSixth = frame(.topCenterSixth, on: screen)!
+            let topRightSixth = frame(.topRightSixth, on: screen)!
+            let bottomLeftSixth = frame(.bottomLeftSixth, on: screen)!
+            expect(
+                topLeftSixth.maxX == topCenterSixth.minX,
+                "\(width): top left/center sixths share an edge exactly")
+            expect(
+                topCenterSixth.maxX == topRightSixth.minX,
+                "\(width): top center/right sixths share an edge exactly")
+            expect(
+                topLeftSixth.maxY == bottomLeftSixth.minY,
+                "\(width): top/bottom sixths share an edge exactly")
+            expect(
+                [
+                    topLeftSixth, topCenterSixth, topRightSixth, bottomLeftSixth,
+                    frame(.bottomCenterSixth, on: screen)!, frame(.bottomRightSixth, on: screen)!
+                ].reduce(CGRect.null) { $0.union($1) } == screen.visibleFrame,
+                "\(width): sixths still cover the whole screen")
 
             let firstFourths = frame(.firstThreeFourths, on: screen)!
             let lastFourths = frame(.lastThreeFourths, on: screen)!
@@ -446,6 +500,23 @@ struct WindowCommandTests {
         expect(
             frame(.centerThird, gap: 10)!.maxX + 10 == frame(.lastThird, gap: 10)!.minX,
             "thirds: center/last gutter is the gap")
+
+        // Sixths: every outer edge takes the full gap, every gutter exactly one gap.
+        let sixths = [
+            frame(.topLeftSixth, gap: 10)!, frame(.topCenterSixth, gap: 10)!,
+            frame(.topRightSixth, gap: 10)!, frame(.bottomLeftSixth, gap: 10)!,
+            frame(.bottomCenterSixth, gap: 10)!, frame(.bottomRightSixth, gap: 10)!
+        ]
+        expect(
+            sixths[0].maxX + 10 == sixths[1].minX, "sixths: top left/center gutter is the gap")
+        expect(
+            sixths[1].maxX + 10 == sixths[2].minX, "sixths: top center/right gutter is the gap")
+        expect(
+            sixths[0].maxY + 10 == sixths[3].minY, "sixths: top/bottom gutter is the gap")
+        expect(
+            sixths.allSatisfy {
+                $0.minX >= 10 && $0.minY >= 10 && $0.maxX <= 1430 && $0.maxY <= 890
+            }, "sixths stay inset from every screen edge")
 
         // An odd gap must not drift when halved and rounded.
         expect(

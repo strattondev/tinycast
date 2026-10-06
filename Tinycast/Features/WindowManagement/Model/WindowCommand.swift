@@ -17,6 +17,12 @@ struct WindowCommand: Identifiable, Hashable, Sendable {
         case lastThird = "last-third"
         case firstTwoThirds = "first-two-thirds"
         case lastTwoThirds = "last-two-thirds"
+        case topLeftSixth = "top-left-sixth"
+        case topCenterSixth = "top-center-sixth"
+        case topRightSixth = "top-right-sixth"
+        case bottomLeftSixth = "bottom-left-sixth"
+        case bottomCenterSixth = "bottom-center-sixth"
+        case bottomRightSixth = "bottom-right-sixth"
         case maximize
         case almostMaximize = "almost-maximize"
         case reasonableSize = "reasonable-size"
@@ -57,6 +63,7 @@ struct WindowCommand: Identifiable, Hashable, Sendable {
         case quarters
         case fourths
         case thirds
+        case sixths
         case sizing
         case moving
         case fullscreen
@@ -68,6 +75,7 @@ struct WindowCommand: Identifiable, Hashable, Sendable {
             case .quarters: return "Quarters"
             case .fourths: return "Fourths"
             case .thirds: return "Thirds"
+            case .sixths: return "Sixths"
             case .sizing: return "Sizing"
             case .moving: return "Moving"
             case .fullscreen: return "Fullscreen"
@@ -136,6 +144,12 @@ enum WindowCommandCatalog {
         case .lastThird: return "Last Third"
         case .firstTwoThirds: return "First Two Thirds"
         case .lastTwoThirds: return "Last Two Thirds"
+        case .topLeftSixth: return "Top Left Sixth"
+        case .topCenterSixth: return "Top Center Sixth"
+        case .topRightSixth: return "Top Right Sixth"
+        case .bottomLeftSixth: return "Bottom Left Sixth"
+        case .bottomCenterSixth: return "Bottom Center Sixth"
+        case .bottomRightSixth: return "Bottom Right Sixth"
         case .maximize: return "Maximize"
         case .almostMaximize: return "Almost Maximize"
         case .reasonableSize: return "Reasonable Size"
@@ -174,6 +188,10 @@ enum WindowCommandCatalog {
         case .firstThird, .firstTwoThirds: return "rectangle.leadingthird.inset.filled"
         case .centerThird: return "rectangle.center.inset.filled"
         case .lastThird, .lastTwoThirds: return "rectangle.trailingthird.inset.filled"
+        // No SF Symbol depicts a single third×half cell, so each sixth borrows its column's third.
+        case .topLeftSixth, .bottomLeftSixth: return "rectangle.leadingthird.inset.filled"
+        case .topCenterSixth, .bottomCenterSixth: return "rectangle.center.inset.filled"
+        case .topRightSixth, .bottomRightSixth: return "rectangle.trailingthird.inset.filled"
         case .maximize: return "arrow.up.left.and.arrow.down.right"
         case .almostMaximize: return "rectangle.inset.filled"
         case .reasonableSize: return "macwindow"
@@ -216,6 +234,9 @@ enum WindowCommandCatalog {
             return .fourths
         case .firstThird, .centerThird, .lastThird, .firstTwoThirds, .lastTwoThirds:
             return .thirds
+        case .topLeftSixth, .topCenterSixth, .topRightSixth, .bottomLeftSixth, .bottomCenterSixth,
+            .bottomRightSixth:
+            return .sixths
         case .maximize, .almostMaximize, .reasonableSize, .maximizeHeight, .maximizeWidth, .center,
             .centerHalf, .centerTwoThirds, .makeLarger, .makeSmaller, .restore:
             return .sizing

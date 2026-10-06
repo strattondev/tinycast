@@ -1,9 +1,9 @@
 # Window Management
 
-Rectangle-style window actions — halves, quarters, fourths, thirds, sizing, nudging, display moves,
-native fullscreen and Space switching — searchable in the palette and bindable to global shortcuts.
-35 commands, plus any number of user-defined [custom sizes](#custom-sizes), no new dependencies and
-no new permission: they reuse the Accessibility grant clipboard paste already needs.
+Rectangle-style window actions — halves, quarters, fourths, thirds, sixths, sizing, nudging, display
+moves, native fullscreen and Space switching — searchable in the palette and bindable to global
+shortcuts. 41 commands, plus any number of user-defined [custom sizes](#custom-sizes), no new
+dependencies and no new permission: they reuse the Accessibility grant clipboard paste already needs.
 
 Ships **off**. Settings › Window Management is the switch, and while it is off there are no launcher
 entries and a still-registered shortcut moves nothing.
@@ -65,7 +65,7 @@ overlay rather than in Foundation.
 
 Adding a command is four edits in `WindowCommand.swift` (a case in `ID`, plus `name`, `symbol` and
 `group` arms), an arm in `WindowPlacementEngine.placement` or `tileFractions`, and bumping
-`commands.count == 35` and its group count in the harness. A command opening a new family also needs
+`commands.count == 41` and its group count in the harness. A command opening a new family also needs
 a `Group` case and its `title` arm; `ID.allCases` stays in group order.
 
 ## Coordinate space
@@ -380,13 +380,14 @@ and every shortcut stays editable afterwards.
 
 ## Testing
 
-`Tests/window-command-test.swift` (500 assertions) covers the catalog, the AX-space convention lock,
-tiling on divisible and non-divisible screens, off-origin and negative-coordinate displays, gap
-arithmetic including degenerate values, sizing, the Make Larger/Smaller round trip, nudges, display
-moves and wrapping, both cycling modes including the strip walk, its wrap and a run of real presses
-across displays, restore recovery, every `WindowActionMemory` rule, and a fuzz sweep over every
-command × gap × screen × cycle × step × degenerate window frame checking for non-finite output,
-negative dimensions, off-screen results, non-determinism and, at step 0, drift on repeat.
+`Tests/window-command-test.swift` (565 assertions) covers the catalog, the AX-space convention lock,
+tiling on divisible and non-divisible screens including the sixths grid, off-origin and
+negative-coordinate displays, gap arithmetic including degenerate values, sizing, the Make
+Larger/Smaller round trip, nudges, display moves and wrapping, both cycling modes including the strip
+walk, its wrap and a run of real presses across displays, restore recovery, every
+`WindowActionMemory` rule, and a fuzz sweep over every command × gap × screen × cycle × step ×
+degenerate window frame checking for non-finite output, negative dimensions, off-screen results,
+non-determinism and, at step 0, drift on repeat.
 
 `Tests/window-preset-test.swift` covers the preset tables (no key used twice, a commanding modifier
 on each) and `WindowShortcutPresetPlan`: a fresh apply, a repeat apply, a replaced user key, a

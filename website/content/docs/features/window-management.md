@@ -1,6 +1,6 @@
 ---
 title: Window management
-description: 35 commands for halves, quarters, thirds, sizing, nudges, displays and fast Space switching.
+description: 41 commands for halves, quarters, thirds, sixths, sizing, nudges, displays and fast Space switching.
 ---
 
 Move and resize the window you were last using, without installing another app.
@@ -23,6 +23,9 @@ of several windows across your displays.
 **Fourths** · First Three Fourths · Last Three Fourths
 
 **Thirds** · First Third · Center Third · Last Third · First Two Thirds · Last Two Thirds
+
+**Sixths** · Top Left Sixth · Top Center Sixth · Top Right Sixth · Bottom Left Sixth ·
+Bottom Center Sixth · Bottom Right Sixth
 
 **Sizing** · Maximize · Almost Maximize · Reasonable Size · Maximize Height · Maximize Width ·
 Center · Center Half · Center Two Thirds · Make Larger · Make Smaller · Restore Window
